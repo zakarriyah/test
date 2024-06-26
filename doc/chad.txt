@@ -1,21 +1,21 @@
 *chad-tree.lua* A File Explorer For Neovim Written In Lua
 
 ==============================================================================
-CONTENTS                                                           *nvim-tree*
+CONTENTS                                                           *chad-tree*
 
-  1. Introduction                             |nvim-tree-introduction|
-  2. Quickstart                               |nvim-tree-quickstart|
-  2.1  Quickstart: Setup                        |nvim-tree-quickstart-setup|
-  2.2  Quickstart: Help                         |nvim-tree-quickstart-help|
-  2.3  Quickstart: Custom Mappings              |nvim-tree-quickstart-custom-mappings|
-  2.4  Quickstart: Highlight                    |nvim-tree-quickstart-highlight|
-  3. Commands                                 |nvim-tree-commands|
-  4. Setup                                    |nvim-tree-setup|
-  5. Opts                                     |nvim-tree-opts|
+  1. Introduction                             |chad-tree-introduction|
+  2. Quickstart                               |chad-tree-quickstart|
+  2.1  Quickstart: Setup                        |chad-tree-quickstart-setup|
+  2.2  Quickstart: Help                         |chad-tree-quickstart-help|
+  2.3  Quickstart: Custom Mappings              |chad-tree-quickstart-custom-mappings|
+  2.4  Quickstart: Highlight                    |chad-tree-quickstart-highlight|
+  3. Commands                                 |chad-tree-commands|
+  4. Setup                                    |chad-tree-setup|
+  5. Opts                                     |chad-tree-opts|
  
 
 ==============================================================================
- 1. INTRODUCTION                                      *nvim-tree-introduction*
+ 1. INTRODUCTION                                      *chad-tree-introduction*
 
 Features
 
@@ -29,7 +29,7 @@ Features
 
 File Icons
 
-    https://github.com/nvim-tree/nvim-web-devicons is optional and used to display file icons.
+    https://github.com/chad-tree/nvim-web-devicons is optional and used to display file icons.
     It requires a patched font: https://www.nerdfonts.com
     Your terminal emulator must be configured to use that font, usually "Hack Nerd Font"
 
@@ -59,22 +59,22 @@ Requirements
     This file explorer requires `neovim >= 0.9.0`
 
 ==============================================================================
- 2. QUICKSTART                                          *nvim-tree-quickstart*
+ 2. QUICKSTART                                          *chad-tree-quickstart*
 
 Install the plugins via your package manager:
-  `"nvim-tree/nvim-tree.lua"`
-  `"nvim-tree/nvim-web-devicons"`
+  `"chad-tree/chad-tree.lua"`
+  `"chad-tree/nvim-web-devicons"`
 
-Disabling |netrw| is strongly advised, see |nvim-tree-netrw|
+Disabling |netrw| is strongly advised, see |chad-tree-netrw|
 
  owever you may customise
-via |nvim-tree.on_attach| e.g. >
+via |chad-tree.on_attach| e.g. >
 
   local function my_on_attach(bufnr)
-    local api = require "nvim-tree.api"
+    local api = require "chad-tree.api"
 
     local function opts(desc)
-      return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+      return { desc = "chad-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
     end
 
     -- default mappings
@@ -86,16 +86,16 @@ via |nvim-tree.on_attach| e.g. >
   end
 
   -- pass to setup along with your other options
-  require("nvim-tree").setup {
+  require("chad-tree").setup {
     ---
     on_attach = my_on_attach,
     ---
   }
 <
 ==============================================================================
- 2.4 QUICKSTART: HIGHLIGHT                    *nvim-tree-quickstart-highlight*
+ 2.4 QUICKSTART: HIGHLIGHT                    *chad-tree-quickstart-highlight*
 
-Run |:ChadTreeHiTest| to show all the highlights that nvim-tree uses.
+Run |:ChadTreeHiTest| to show all the highlights that chad-tree uses.
 
 They can be customised before or after setup is called and will be immediately
 applied at runtime. e.g. >
@@ -107,26 +107,26 @@ applied at runtime. e.g. >
         :hi link ChadTreeImageFile   Title
     ]])
 <
-See |nvim-tree-highlight| for details.
+See |chad-tree-highlight| for details.
 
 ==============================================================================
- 3. COMMANDS                                              *nvim-tree-commands*
+ 3. COMMANDS                                              *chad-tree-commands*
 
 *:ChadTreeOpen*
 
-    Opens the tree. See |nvim-tree-api.tree.open()|
+    Opens the tree. See |chad-tree-api.tree.open()|
 
     Calls: `api.tree.open({ path = "<args>" })`
 
 *:ChadTreeClose*
 
-    Closes the tree. See |nvim-tree-api.tree.close()|
+    Closes the tree. See |chad-tree-api.tree.close()|
 
     Calls: `api.tree.close()`
 
 *:ChadTreeToggle*
 
-    Open or close the tree. See |nvim-tree-api.tree.toggle()|
+    Open or close the tree. See |chad-tree-api.tree.toggle()|
 
     Calls: `api.tree.toggle({ path = "<args>", find_file = false, update_root = false, focus = true, })`
 
@@ -134,13 +134,13 @@ See |nvim-tree-highlight| for details.
 
     Open the tree if it is closed, and then focus on the tree.
 
-    See |nvim-tree-api.tree.open()|
+    See |chad-tree-api.tree.open()|
 
     Calls: `api.tree.open()`
 
 *:ChadTreeRefresh*
 
-    Refresh the tree. See |nvim-tree-api.tree.reload()|
+    Refresh the tree. See |chad-tree-api.tree.reload()|
 
     Calls: `api.tree.reload()`
 
@@ -154,7 +154,7 @@ See |nvim-tree-highlight| for details.
 
     Invoke with a bang `:ChadTreeFindFile!` to update the root.
 
-    See |nvim-tree-api.tree.find_file()|
+    See |chad-tree-api.tree.find_file()|
 
     Calls: `api.tree.find_file({ update_root = <bang>, open = true, focus = true, })`
 
@@ -166,7 +166,7 @@ See |nvim-tree-highlight| for details.
 
     Invoke with a bang `:ChadTreeFindFileToggle!` to update the root.
 
-    See |nvim-tree-api.tree.toggle()|
+    See |chad-tree-api.tree.toggle()|
 
     Calls: `api.tree.toggle({ path = "<args>", update_root = <bang>, find_file = true, focus = true, })`
 
@@ -174,7 +174,7 @@ See |nvim-tree-highlight| for details.
 
     Print clipboard content for both cut and copy
 
-    See |nvim-tree-api.fs.print_clipboard()|
+    See |chad-tree-api.fs.print_clipboard()|
 
     Calls: `api.fs.print_clipboard()`
 
@@ -188,26 +188,25 @@ See |nvim-tree-highlight| for details.
 
 *:ChadTreeCollapse*
 
-    Collapses the nvim-tree recursively.
+    Collapses the chad-tree recursively.
 
-    See |nvim-tree-api.tree.collapse_all()|
+    See |chad-tree-api.tree.collapse_all()|
 
     Calls: `api.tree.collapse_all(false)`
 
 *:ChadTreeCollapseKeepBuffers*
 
-    Collapses the nvim-tree recursively, but keep the directories open, which are
+    Collapses the chad-tree recursively, but keep the directories open, which are
     used in an open buffer.
 
-    See |nvim-tree-api.tree.collapse_all()|
+    See |chad-tree-api.tree.collapse_all()|
 
     Calls: `api.tree.collapse_all(true)`
 
 *:ChadTreeHiTest*
 
-    Show nvim-tree highlight groups similar to `:so $VIMRUNTIME/syntax/hitest.vim`
+    Show chad-tree highlight groups similar to `:so $VIMRUNTIME/syntax/hitest.vim`
 
-    See |nvim-tree-api.diagnostics.hi_test()|
+    See |chad-tree-api.diagnostics.hi_test()|
 
     Calls: `api.diagnostics.hi_test()`
-
