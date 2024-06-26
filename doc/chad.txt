@@ -1,0 +1,11 @@
+*chad.txt*	For Nvim version 0.10.0 and above
+==============================================================================
+Plugin Name                                            *nvconfig*
+
+This is the default configuration.
+
+==============================================================================
+CONFIGURATION						*nvconfig-configuration*
+
+The default configuration options are as follows:
+so this works bro
