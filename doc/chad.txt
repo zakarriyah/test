@@ -1,70 +1,213 @@
-*chad.txt*     For Neovim >= 0.8.0    Last change: 2024 January 18
+*chad-tree.lua* A File Explorer For Neovim Written In Lua
 
 ==============================================================================
-Table of Contents                         *my-template-docs-table-of-contents*
+CONTENTS                                                           *nvim-tree*
 
-1. A Neovim Plugin Template        |my-template-docs-a-neovim-plugin-template|
-  - Using it              |my-template-docs-a-neovim-plugin-template-using-it|
-  - Features and structure|my-template-docs-a-neovim-plugin-template-features-and-structure|
+  1. Introduction                             |nvim-tree-introduction|
+  2. Quickstart                               |nvim-tree-quickstart|
+  2.1  Quickstart: Setup                        |nvim-tree-quickstart-setup|
+  2.2  Quickstart: Help                         |nvim-tree-quickstart-help|
+  2.3  Quickstart: Custom Mappings              |nvim-tree-quickstart-custom-mappings|
+  2.4  Quickstart: Highlight                    |nvim-tree-quickstart-highlight|
+  3. Commands                                 |nvim-tree-commands|
+  4. Setup                                    |nvim-tree-setup|
+  5. Opts                                     |nvim-tree-opts|
+ 
 
 ==============================================================================
-1. A Neovim Plugin Template        *my-template-docs-a-neovim-plugin-template*
+ 1. INTRODUCTION                                      *nvim-tree-introduction*
 
+Features
 
+    - Automatic updates
+    - File type icons
+    - Git integration
+    - Diagnostics integration: LSP and COC
+    - (Live) filtering
+    - Cut, copy, paste, rename, delete, create
+    - Highly customisable
 
-A template repository for Neovim plugins.
+File Icons
 
+    https://github.com/nvim-tree/nvim-web-devicons is optional and used to display file icons.
+    It requires a patched font: https://www.nerdfonts.com
+    Your terminal emulator must be configured to use that font, usually "Hack Nerd Font"
 
-USING IT                  *my-template-docs-a-neovim-plugin-template-using-it*
+     should look like an open folder.
 
-Via `gh`
+    To disable the display of icons see |renderer.icons.show|
 
->
-    $ gh repo create my-plugin -p ellisonleao/nvim-plugin-template
+Colours
+
+    Syntax highlighting uses g:terminal_color_ from colorschemes, falls back to
+    ugly colors otherwise.
+
+Git Integration
+
+    One or two icons for git status. When two are shown, the left is staged.
+
+      ✗  unstaged
+      ✓  staged
+        unmerged
+      ➜  renamed
+      ★  untracked
+        deleted
+      ◌  ignored
+
+Requirements
+
+    This file explorer requires `neovim >= 0.9.0`
+
+==============================================================================
+ 2. QUICKSTART                                          *nvim-tree-quickstart*
+
+Install the plugins via your package manager:
+  `"nvim-tree/nvim-tree.lua"`
+  `"nvim-tree/nvim-web-devicons"`
+
+Disabling |netrw| is strongly advised, see |nvim-tree-netrw|
+
+ owever you may customise
+via |nvim-tree.on_attach| e.g. >
+
+  local function my_on_attach(bufnr)
+    local api = require "nvim-tree.api"
+
+    local function opts(desc)
+      return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+    end
+
+    -- default mappings
+    api.config.mappings.default_on_attach(bufnr)
+
+    -- custom mappings
+    vim.keymap.set('n', '<C-t>', api.tree.change_root_to_parent,        opts('Up'))
+    vim.keymap.set('n', '?',     api.tree.toggle_help,                  opts('Help'))
+  end
+
+  -- pass to setup along with your other options
+  require("nvim-tree").setup {
+    ---
+    on_attach = my_on_attach,
+    ---
+  }
 <
+==============================================================================
+ 2.4 QUICKSTART: HIGHLIGHT                    *nvim-tree-quickstart-highlight*
 
-Viagithub web page:
+Run |:ChadTreeHiTest| to show all the highlights that nvim-tree uses.
 
-Click on `Use this template`
+They can be customised before or after setup is called and will be immediately
+applied at runtime. e.g. >
 
-
-
-
-FEATURES AND STRUCTURE*my-template-docs-a-neovim-plugin-template-features-and-structure*
-
-- 100% Lua
-- Github actions for:
-    - running tests using plenary.nvim <https://github.com/nvim-lua/plenary.nvim> and busted <https://olivinelabs.com/busted/>
-    - check for formatting errors (Stylua)
-    - vimdocs autogeneration from README.md file
-    - luarocks release (LUAROCKS_API_KEY secret configuration required)
-
-
-PLUGIN STRUCTURE ~
-
->
-    .
-    ├── lua
-    │   ├── plugin_name
-    │   │   └── module.lua
-    │   └── plugin_name.lua
-    ├── Makefile
-    ├── plugin
-    │   └── plugin_name.lua
-    ├── README.md
-    ├── tests
-    │   ├── minimal_init.lua
-    │   └── plugin_name
-    │       └── plugin_name_spec.lua
+    vim.cmd([[
+        :hi      ChadTreeExecFile    guifg=#ffa0a0
+        :hi      ChadTreeSpecialFile guifg=#ff80ff gui=underline
+        :hi      ChadTreeSymlink     guifg=Yellow  gui=italic
+        :hi link ChadTreeImageFile   Title
+    ]])
 <
+See |nvim-tree-highlight| for details.
 
 ==============================================================================
-2. Links                                              *my-template-docs-links*
+ 3. COMMANDS                                              *nvim-tree-commands*
 
-1. *GitHub Workflow Status*: https://img.shields.io/github/actions/workflow/status/ellisonleao/nvim-plugin-template/lint-test.yml?branch=main&style=for-the-badge
-2. *Lua*: https://img.shields.io/badge/Made%20with%20Lua-blueviolet.svg?style=for-the-badge&logo=lua
-3. **: https://docs.github.com/assets/cb-36544/images/help/repository/use-this-template-button.png
+*:ChadTreeOpen*
 
-Generated by panvimdoc <https://github.com/kdheepak/panvimdoc>
+    Opens the tree. See |nvim-tree-api.tree.open()|
 
-vim:tw=78:ts=8:noet:ft=help:norl:
+    Calls: `api.tree.open({ path = "<args>" })`
+
+*:ChadTreeClose*
+
+    Closes the tree. See |nvim-tree-api.tree.close()|
+
+    Calls: `api.tree.close()`
+
+*:ChadTreeToggle*
+
+    Open or close the tree. See |nvim-tree-api.tree.toggle()|
+
+    Calls: `api.tree.toggle({ path = "<args>", find_file = false, update_root = false, focus = true, })`
+
+*:ChadTreeFocus*
+
+    Open the tree if it is closed, and then focus on the tree.
+
+    See |nvim-tree-api.tree.open()|
+
+    Calls: `api.tree.open()`
+
+*:ChadTreeRefresh*
+
+    Refresh the tree. See |nvim-tree-api.tree.reload()|
+
+    Calls: `api.tree.reload()`
+
+*:ChadTreeFindFile*
+
+    The command will change the cursor in the tree for the current bufname.
+
+    It will also open the leafs of the tree leading to the file in the buffer
+    (if you opened a file with something else than the ChadTree, like `fzf` or
+    `:split`)
+
+    Invoke with a bang `:ChadTreeFindFile!` to update the root.
+
+    See |nvim-tree-api.tree.find_file()|
+
+    Calls: `api.tree.find_file({ update_root = <bang>, open = true, focus = true, })`
+
+*:ChadTreeFindFileToggle*
+
+    close the tree or change the cursor in the tree for the current bufname,
+    similar to combination of |:ChadTreeToggle| and |:ChadTreeFindFile|. Takes an
+    optional path argument.
+
+    Invoke with a bang `:ChadTreeFindFileToggle!` to update the root.
+
+    See |nvim-tree-api.tree.toggle()|
+
+    Calls: `api.tree.toggle({ path = "<args>", update_root = <bang>, find_file = true, focus = true, })`
+
+*:ChadTreeClipboard*
+
+    Print clipboard content for both cut and copy
+
+    See |nvim-tree-api.fs.print_clipboard()|
+
+    Calls: `api.fs.print_clipboard()`
+
+*:ChadTreeResize*
+
+    Resize the ChadTree window to the given size. Example: `:ChadTreeResize 50`
+    resizes the window to the width of 50. If the size starts with "+" or "-" it
+    adds or removes the given value to the current window width.
+    Example `:ChadTreeResize -20` removes the value 20 from the current width. And
+    `:ChadTreeResize +20` adds the value 20 to the current width.
+
+*:ChadTreeCollapse*
+
+    Collapses the nvim-tree recursively.
+
+    See |nvim-tree-api.tree.collapse_all()|
+
+    Calls: `api.tree.collapse_all(false)`
+
+*:ChadTreeCollapseKeepBuffers*
+
+    Collapses the nvim-tree recursively, but keep the directories open, which are
+    used in an open buffer.
+
+    See |nvim-tree-api.tree.collapse_all()|
+
+    Calls: `api.tree.collapse_all(true)`
+
+*:ChadTreeHiTest*
+
+    Show nvim-tree highlight groups similar to `:so $VIMRUNTIME/syntax/hitest.vim`
+
+    See |nvim-tree-api.diagnostics.hi_test()|
+
+    Calls: `api.diagnostics.hi_test()`
+
